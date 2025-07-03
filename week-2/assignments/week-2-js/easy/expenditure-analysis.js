@@ -1,9 +1,19 @@
 function calculateTotalSpentByCategory(transactions) {
-  let spentByCategory = [];
-  for (let i = 0; i < transactions.length; i++) {
-    const category = {};
+  const spentByCategory = {};
+  transactions.forEach((transaction) => {
+    const { category, price } = transaction;
+    if (category in spentByCategory) {
+      spentByCategory[category] += price;
+    } else {
+      spentByCategory[category] = price;
+    }
+  });
+  console.log(spentByCategory);
+  const result = [];
+  for (const category in spentByCategory) {
+    result.push({ category, totalSpent: spentByCategory[category] });
   }
-  return spentByCategory;
+  return result;
 }
 
 const transactions = [
