@@ -1,0 +1,72 @@
+<html>
+
+<head>
+     <title>Todo Advance DOM Manipulation</title>
+</head>
+
+<body>
+     <h1>Todo List</h1>
+     <div id="root">
+     </div>
+     <br>
+     <div>
+          <input type="text" placeholder="Write your todo here...">
+          <button onclick="addTodo()">Add Todo</button>
+     </div>
+
+     <script>
+          let ctr = 0;
+          let todos = [];
+
+          function todoComponent(todo) {
+               const div = document.createElement("div");
+               const h1 = document.createElement("h1");
+               const button = document.createElement("button");
+               const updateButton = document.createElement("button");
+               h1.innerText = todo.title;
+               button.innerHTML = "Delete";
+               button.setAttribute("onclick", "deleteTodo(" + todo.id + ")")
+               updateButton.innerHTML = "Update";
+               div.setAttribute("id", todo.id);
+               div.appendChild(h1);
+               div.appendChild(updateButton);
+               div.appendChild(button);
+
+               document.querySelector("#root").appendChild(div);
+          }
+
+          function addTodo() {
+               todos.push({
+                    id: ctr++,
+                    title: document.querySelector("input").value
+               });
+               render(todos);
+          }
+
+          function deleteTodo(todoId) {
+               if (todos.length == 1) {
+                    todos.pop();
+                    render(todos);
+               } else {
+                    todos.splice(todoId, 1);
+                    render(todos);
+               }
+
+          }
+
+          function updateTodo() {
+
+          }
+
+          function render(todos) {
+               const todoList = document.getElementById("root");
+               todoList.innerHTML = "";
+
+               todos.forEach(todo => {
+                    todoComponent(todo);
+               });
+          }
+     </script>
+</body>
+
+</html>
