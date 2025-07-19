@@ -1,0 +1,16 @@
+{
+  "name": "class-code",
+  "version": "1.0.0",
+  "description": "The class-1 code basics about the node js and the packages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0"
+  }
+}
