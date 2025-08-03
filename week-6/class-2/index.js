@@ -13,6 +13,10 @@ const users = [];
 app.use(express.json());
 app.use(cors());
 
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + "/public/index.html");
+});
+
 app.post("/register", function (req, res) {
   const email = req.body.email;
   const password = req.body.password;
@@ -47,6 +51,9 @@ app.post("/login", function (req, res) {
       },
       jwtToken
     );
+
+    res.header("token", token);
+    res.cookie("token", token);
 
     res.status(200).json({
       token,
