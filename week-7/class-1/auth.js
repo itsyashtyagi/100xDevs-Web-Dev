@@ -7,7 +7,7 @@ export function auth(req, res, next) {
   const response = jwt.verify(token, JWT_SECRET);
 
   if (response) {
-    res.userId = response.userId;
+    res.userId = response.id;
     next();
   } else {
     res.status(401).json({
