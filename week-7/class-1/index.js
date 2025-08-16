@@ -4,11 +4,10 @@ const jwt = require("jsonwebtoken");
 const auth = require("./auth");
 const mongoose = require("mongoose");
 const { UserModel, TodoModel } = require("./db");
+const bcrypt = require("bcrypt");
+const { z } = require("zod");
 
 const JWT_SECRET = "yashtyagijsonsecretkeymongodb";
-mongoose.connect(
-  "mongodb+srv://gasfgfafa:Aa5jxKhylWdFhv4v@cluster0.7kmvq.mongodb.net/todo-app"
-);
 
 const app = express();
 
@@ -16,45 +15,67 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/signup", async function (req, res) {
-  const name = req.body.name;
-  const email = req.body.email;
-  const password = req.body.password;
-
-  await UserModel.create({
-    name: name,
-    email: email,
-    password: password,
+  const User = z.object({
+    name: z.string(),
+    email: z.string().email(),
+    password: z.string().min(8),
   });
 
-  res.status(201).json({
-    message: "The new user has been created successfully",
-  });
+  // const name = req.body.name;
+  // const email = req.body.email;
+  // const password = req.body.password;
+  const hashedPassword = await bcrypt.hash(User.password, 10);
+
+  try {
+    await UserModel.create({
+      name: User.name,
+      email: User.email,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({
+      message: "The new user has been created successfully",
+    });
+  } catch (error) {
+    res.status(403).json({
+      error,
+    });
+  }
 });
 
 app.post("/login", async function (req, res) {
   const email = req.body.email;
   const password = req.body.password;
+  console.log(password);
 
-  const response = await UserModel.findOne({
-    email: email,
-    password: password,
-  });
-
-  if (response) {
-    const token = jwt.sign(
-      {
-        id: response._id.toString(),
-      },
-      JWT_SECRET
-    );
-
-    res.json(200).json({
-      message: "The user is done successfully",
-      token: token,
+  try {
+    const response = await UserModel.findOne({
+      email: email,
     });
-  } else {
+
+    const match = await bcrypt.compare(password, response.password);
+    console.log(match);
+
+    if (match && response) {
+      const token = await jwt.sign(
+        {
+          id: response._id.toString(),
+        },
+        JWT_SECRET
+      );
+
+      res.status(200).json({
+        message: "The user is done successfully",
+        token: token,
+      });
+    } else {
+      res.status(403).json({
+        message: "Invalid Credentials",
+      });
+    }
+  } catch (error) {
     res.status(403).json({
-      message: "Invalid Credentials",
+      error,
     });
   }
 });
@@ -87,6 +108,13 @@ app.get("/todos", auth, async function (req, res) {
   });
 });
 
-app.listen(3000, function () {
-  console.log("The server is started at the port 3000");
+app.listen(3000, async function () {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://yashtyagi8006:4FwmdvurdkTCJFJh@cluster0.wsmlzzn.mongodb.net/todo-app"
+    );
+    console.log("The server is started at the port 3000");
+  } catch (error) {
+    console.log("The app is crashed");
+  }
 });
