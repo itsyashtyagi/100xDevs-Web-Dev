@@ -15,15 +15,25 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/signup", async function (req, res) {
-  const User = z.object({
+  const requiredBody = z.object({
     name: z.string(),
     email: z.string().email(),
     password: z.string().min(8),
   });
 
-  // const name = req.body.name;
-  // const email = req.body.email;
-  // const password = req.body.password;
+  const parsedDataWithSucess = requiredBody.safeParse(req.body);
+
+  if (!parsedDataWithSucess.success) {
+    res.status(403).json({
+      message: "Incorrect format",
+      error: parsedDataWithSucess.error,
+    });
+    return;
+  }
+
+  const name = req.body.name;
+  const email = req.body.email;
+  const password = req.body.password;
   const hashedPassword = await bcrypt.hash(User.password, 10);
 
   try {
@@ -46,6 +56,7 @@ app.post("/signup", async function (req, res) {
 app.post("/login", async function (req, res) {
   const email = req.body.email;
   const password = req.body.password;
+
   console.log(password);
 
   try {
