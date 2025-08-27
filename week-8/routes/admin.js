@@ -10,6 +10,8 @@ const adminRouter = Router();
 
 adminRouter.post("/register", function (req, res) {});
 
+adminRouter.post("/login", function (req, res) {});
+
 module.exports = {
   adminRouter,
 };
