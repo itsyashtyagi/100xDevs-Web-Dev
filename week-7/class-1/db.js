@@ -11,7 +11,7 @@ const User = new Schema({
 const Todo = new Schema({
   title: String,
   done: Boolean,
-  userId: ObjectId,
+  userId: { type: Schema.Types.ObjectId, ref: "users" },
 });
 
 const UserModel = mongoose.model("users", User);
