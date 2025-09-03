@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const { z } = require("zod");
 const bcrypt = require("bcrypt");
 const userMiddleware = require("../middleware/user");
-const { UserModel } = require("../db");
+const { UserModel, CourseModel } = require("../db");
 dotenv.config();
 
 const jwtPassword = process.env.JWT_USER_PASSWORD;
