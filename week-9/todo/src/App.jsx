@@ -1,35 +1,80 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tasks, setTasks] = useState([]);
+  const taskTitle = useRef("");
+  const taskDescription = useRef("");
+
+  function createTask() {
+    setTasks([
+      ...tasks,
+      {
+        title: taskTitle.current.value,
+        description: taskDescription.current.value,
+      },
+    ]);
+  }
+
+  function deleteTask(index) {
+    var clonedTaks = [...tasks];
+
+    clonedTaks.splice(index, 1);
+
+    setTasks(clonedTaks);
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <HeaderComponent />
+        <div>
+          Title : <input placeholder="text"></input>
+          <br />
+          <br />
+          Description : <textarea placeholder="text"></textarea>
+        </div>
+        <br />
+        <div>
+          <button onClick={AddTodo}>Add Todo</button>
+        </div>
+        <br />
+        <div>
+          {todos.map(
+            (todo, index) =>
+              `${index + 1} : ${todo.title} -- ${todo.description}`
+          )}
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+function HeaderComponent() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        border: "2px solid black",
+        borderRadius: "8px",
+        margin: "20px",
+        marginBottom: "50px",
+        padding: "15px",
+        width: "fit-content",
+      }}
+    >
+      Todo Application
+    </div>
+  );
+}
+
+export default App;
